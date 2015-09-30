@@ -28,8 +28,14 @@ RUN git config --global url."https://".insteadOf git:// &&\
 # Create static files
 RUN cd /usr/local/src/lemur && npm install --unsafe-perm && node_modules/.bin/gulp build && node_modules/.bin/gulp package && rm -r bower_components node_modules
 
-ADD lemur.conf.py /usr/local/src/lemur/lemur.conf.py 
+# Install signbox plugin
+
+COPY signbox /tmp/signbox
+RUN cd /tmp/signbox && python /tmp/signbox/setup.py install
+
+ADD lemur.conf.py /usr/local/src/lemur/lemur.conf.py
 ADD api-start.sh /usr/local/src/lemur/scripts/api-start.sh
+
 RUN chmod +x /usr/local/src/lemur/scripts/api-start.sh
 
 CMD ["/usr/local/src/lemur/scripts/api-start.sh"]

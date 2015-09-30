@@ -1,10 +1,11 @@
 lemur-web:
-  restart: always
+  # restart: always
   build: ./web
   expose:
     - "127.0.0.1:8000:8000"
   links:
     - postgres:postgres
+    - signbox
   volumes:
     - /usr/local/src/lemur/lemur/static/dist
   environment:
@@ -14,8 +15,8 @@ lemur-nginx:
   restart: always
   build: ./nginx/
   ports:
-    - "80:80"
-    - "443:443"
+    - "8080:80"
+    - "4443:443"
   volumes_from:
     - lemur-web
   links:
@@ -27,3 +28,8 @@ postgres:
   image: postgres:latest
   ports:
     - "5432:5432"
+
+signbox:
+  build: ./signbox
+  ports:
+    - "9090:9090"
